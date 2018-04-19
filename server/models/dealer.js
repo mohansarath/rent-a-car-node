@@ -17,8 +17,7 @@ const Dealer = mongoose.model('Dealer', {
     delaer_Mobile: {
         type: Number,
         required: true,
-        min: 10,
-        max: 10
+     
     },
     is_Active: {
         type: Boolean,
@@ -35,6 +34,11 @@ const Dealer = mongoose.model('Dealer', {
             message: '{VALUE} is not a valid email'
         }
     },
+    password: {
+        type: String,
+        required: true,
+        minlength: 6
+    },
     is_Approved: {
         type: Boolean,
         default: false
@@ -42,8 +46,7 @@ const Dealer = mongoose.model('Dealer', {
     contact_Mobile: {
         type: Number,
         required: true,
-        min: 10,
-        max: 10
+    
     },
     address: {
         type: String,
