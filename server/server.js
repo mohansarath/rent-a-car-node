@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
 const request = require('request');
+const sgMail = require('@sendgrid/mail');
 
 var { mongoose } = require('./db/mongoose');
 var { Dealer } = require('./models/dealer');
@@ -63,8 +64,18 @@ app.post('/dealer', (req, res) => {
             res.status(400).send(e);
         });
 
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        console.log(dealer_body.email);
+        const msg = {
+            to: dealer_body.email,
+            from: 'sarath.sct@gmail.com',
+            subject: 'Welcome to Rent A Car',
+            text: `Dealer Created . \n username:${dealer_body.email} \n password:${dealer_body.password}\n Regards,\nAdmin`
+        };
+        sgMail.send(msg);
+
     });
-    
+
 });
 
 app.listen(3000, () => {
