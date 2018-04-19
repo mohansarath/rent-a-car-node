@@ -70,7 +70,11 @@ app.post('/dealer', (req, res) => {
             to: dealer_body.email,
             from: 'sarath.sct@gmail.com',
             subject: 'Welcome to Rent A Car',
-            text: `Dealer Created . \n username:${dealer_body.email} \n password:${dealer_body.password}\n Regards,\nAdmin`
+            text: `Dear ${dealer_body.contact_Name},
+                \n\t Dealer Created . 
+                \n\t username: ${dealer_body.email}
+                \n\t password:${dealer_body.password}
+                \nRegards,\nAdmin`
         };
         sgMail.send(msg);
 
