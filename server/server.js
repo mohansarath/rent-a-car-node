@@ -15,6 +15,21 @@ var app = express();
 
 app.use(bodyParser.json());
 
+
+app.post('/login',(req, res) => {
+    var body = _.pick(req.body, ['username', 'password']);
+
+    Login.findOne({
+        username: body.username,
+        password: body.password
+    },'username role', (err,login) => {
+        if(err) return res.send(err);
+        if(!login) return res.send('wrong login credentials')
+        res.send(login);
+    })
+})
+
+
 app.post('/dealer', (req, res) => {
     var body = _.pick(req.body, ['dealer_Name', 'contact_Name', 'delaer_Mobile', 'email', 'contact_Mobile', 'address', 'pincode', 'password', 'geoLocation']);
     var loginBody = {

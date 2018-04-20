@@ -16,7 +16,7 @@ const Dealer = mongoose.model('Dealer', {
     },
     delaer_Mobile: {
         type: Number,
-        required: true,
+        required: true
      
     },
     is_Active: {
