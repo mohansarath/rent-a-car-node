@@ -82,8 +82,18 @@ app.post('/dealer', (req, res) => {
 
 });
 
+
+app.get('/dealer',(req, res) => {
+    Dealer.find().then((dealer) => {
+        res.send({ dealer })
+    }, (e) => {
+        res.status(400).send(e);
+    })
+})
+
 app.listen(3000, () => {
     console.log('Started on port 3000');
 });
 
 module.exports = { app };
+
