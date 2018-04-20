@@ -16,17 +16,24 @@ var app = express();
 app.use(bodyParser.json());
 
 
-app.post('/login',(req, res) => {
+app.post('/login', (req, res) => {
     var body = _.pick(req.body, ['username', 'password']);
 
-    Login.findOne({
-        username: body.username,
-        password: body.password
-    },'username role', (err,login) => {
-        if(err) return res.send(err);
-        if(!login) return res.send('wrong login credentials')
-        res.send(login);
-    })
+    // Login.findOne({
+    //     username: body.username,
+    //     password: body.password
+    // },'username role',
+    // (err,login) => {
+    //     if(err) return res.send(err);
+    //     if(!login) return res.send('wrong login credentials')
+    //     res.send(login);
+    // }).then(() => {
+    //     return Login.generateAuthToken();
+    // }).then((token) => {
+    //     console.log(token);
+    //     res.header('x-auth', token).send(Login);
+    // })
+
 })
 
 
@@ -47,7 +54,7 @@ app.post('/dealer', (req, res) => {
         pincode: body.pincode,
         password: body.password,
         geoLocation: [{
-            lat:'',lng:''
+            lat: '', lng: ''
         }
         ]
     }
@@ -55,7 +62,7 @@ app.post('/dealer', (req, res) => {
     const url = dealer_body.pincode;
     var geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${url}&key=AIzaSyChWOXtMjUBR4I61V5qrpz4UKnsu8Czudk`;
     var login = new Login(loginBody);
-    
+
     request((geocodeUrl), function (error, response, body) {
         var x = JSON.parse(body);
         console.log('response:::::', x.results[0].geometry.location.lat);
@@ -66,15 +73,26 @@ app.post('/dealer', (req, res) => {
         dealer_body.geoLocation[0].lng = lng;
         console.log('body::::::::::::', body);
         var dealer = new Dealer(dealer_body);
-      
 
-        login.save().then((doc) => {
-            res.send(doc);
+
+
+        login.save().then(() => {
+            return login.generateAuthToken();
+        }).then((token) => {
+            res.header('x-auth', token).send(login);
         }).catch((e) => {
             res.status(400).send(e);
         });
+
+        // login.save().then((doc) => {
+        //     res.send(doc);
+        // }).catch((e) => {
+        //     res.status(400).send(e);
+        // });
+
+
         dealer.save().then((doc) => {
-            res.send(doc);
+            //  res.send(doc);
         }).catch((e) => {
             res.status(400).send(e);
         });
@@ -98,7 +116,7 @@ app.post('/dealer', (req, res) => {
 });
 
 
-app.get('/dealer',(req, res) => {
+app.get('/dealer', (req, res) => {
     Dealer.find().then((dealer) => {
         res.send({ dealer })
     }, (e) => {
