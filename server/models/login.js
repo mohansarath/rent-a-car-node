@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');``
+const bcrypt = require('bcryptjs');
 
 var LoginSchema = new mongoose.Schema({
     username: {
@@ -49,7 +50,20 @@ LoginSchema.methods.generateAuthToken = function () {
     });
 };
 
+LoginSchema.pre('save', function (next) {
+    var login = this;
 
+    if (login.isModified('password')) {
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(login.password, salt, (err, hash) => {
+                login.password = hash;
+                next();
+            })
+        });
+    } else {
+        next();
+    }
+});
 
 
 const Login = mongoose.model('Login', LoginSchema)

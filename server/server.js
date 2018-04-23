@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
 const request = require('request');
 const sgMail = require('@sendgrid/mail');
+const bcrypt = require('bcryptjs');
 
 var { mongoose } = require('./db/mongoose');
 var { Dealer } = require('./models/dealer');
@@ -18,24 +19,84 @@ app.use(bodyParser.json());
 
 app.post('/login', (req, res) => {
     var body = _.pick(req.body, ['username', 'password']);
+    var hashedPAssword;
+
+    Login.findOne({
+        username: body.username
+    }, (err, login) => {
+        if (!login) {
+            return res.send("username doesnot exist")
+        } else {
+            console.log(login);
+            hashedPAssword = login.password;
+            bcrypt.compare(body.password, hashedPAssword, (err, resp) => {
+                console.log(resp);
+
+                if (resp === true) {
+                    console.log(login);
+                    res.header('x-auth', login.tokens[0].token).send({
+                        username: login.username,
+                        role: login.role
+                    });
+                } else {
+                    res.send("wrong password");
+                }
+            })
+        }
+
+    })
+
+    console.log(hashedPAssword);
+    // bcrypt.compare(body.password, hashedPAssword, (err, resp) => {
+    //      console.log(res);
+
+    //     if(res === true){
+    //         res.header('x-auth', login.tokens[0].token).send({
+    //             username: login.username,
+    //             role: login.role
+    //         });
+    //     }
+    // })
+
 
     // Login.findOne({
     //     username: body.username,
     //     password: body.password
-    // },'username role',
+    // },
     // (err,login) => {
     //     if(err) return res.send(err);
     //     if(!login) return res.send('wrong login credentials')
-    //     res.send(login);
-    // }).then(() => {
-    //     return Login.generateAuthToken();
-    // }).then((token) => {
-    //     console.log(token);
-    //     res.header('x-auth', token).send(Login);
+    //     console.log(login);
+    //      res.header('x-auth',login.tokens[0].token).send({ 
+    //         username: login.username, 
+    //         role: login.role
+    //     });
     // })
 
 })
 
+app.post('/admin', (req, res) => {
+
+    var body = _.pick(req.body, ['username', 'password']);
+    var adminBody = {
+        username: body.username,
+        password: body.password,
+        role: 'admin'
+    }
+    var login = new Login(adminBody);
+
+    login.save().then(() => {
+        return login.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).send({
+            username: login.username,
+            role: login.role
+        });
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+
+})
 
 app.post('/dealer', (req, res) => {
     var body = _.pick(req.body, ['dealer_Name', 'contact_Name', 'delaer_Mobile', 'email', 'contact_Mobile', 'address', 'pincode', 'password', 'geoLocation']);
@@ -79,7 +140,10 @@ app.post('/dealer', (req, res) => {
         login.save().then(() => {
             return login.generateAuthToken();
         }).then((token) => {
-            res.header('x-auth', token).send(login);
+            res.header('x-auth', token).send({
+                username: login.username,
+                role: login.role
+            });
         }).catch((e) => {
             res.status(400).send(e);
         });
@@ -101,13 +165,13 @@ app.post('/dealer', (req, res) => {
         console.log(dealer_body.email);
         const msg = {
             to: dealer_body.email,
-            from: 'sarath.sct@gmail.com',
+            from: 'rentacar@experionglobal.com',
             subject: 'Welcome to Rent A Car',
             text: `Dear ${dealer_body.contact_Name},
                 \n\t Dealer Created . 
                 \n\t username: ${dealer_body.email}
                 \n\t password:${dealer_body.password}
-                \nRegards,\nAdmin`
+                \nRegards Sarath`
         };
         sgMail.send(msg);
 
