@@ -50,6 +50,28 @@ LoginSchema.methods.generateAuthToken = function () {
     });
 };
 
+LoginSchema.statics.findByToken = function (token) {
+    var Login = this;
+    var decoded;
+
+    try {
+        decoded = jwt.verify(token, '123abc')
+    } catch (e) {
+        //     return new Promise((resolve, reject) => {
+        //         reject();
+        //     })
+
+        return Promise.reject();
+    }
+
+    return Login.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    });
+
+};
+
 LoginSchema.pre('save', function (next) {
     var login = this;
 

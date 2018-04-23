@@ -11,6 +11,7 @@ const bcrypt = require('bcryptjs');
 var { mongoose } = require('./db/mongoose');
 var { Dealer } = require('./models/dealer');
 var { Login } = require('./models/login');
+var { authenticate } = require('./middleware/authenticate');
 
 var app = express();
 
@@ -180,7 +181,7 @@ app.post('/dealer', (req, res) => {
 });
 
 
-app.get('/dealer', (req, res) => {
+app.get('/dealer',authenticate, (req, res) => {
     Dealer.find().then((dealer) => {
         res.send({ dealer })
     }, (e) => {
