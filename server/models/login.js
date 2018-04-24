@@ -6,7 +6,8 @@ const bcrypt = require('bcryptjs');
 var LoginSchema = new mongoose.Schema({
     username: {
         type: String,
-        required: true
+        required: true,
+        unique:true
     },
     password: {
         type: String,
@@ -55,7 +56,8 @@ LoginSchema.statics.findByToken = function (token) {
     var decoded;
 
     try {
-        decoded = jwt.verify(token, '123abc')
+        decoded = jwt.verify(token, '123abc');
+        // console.log('decoded::::::::::::',decoded);
     } catch (e) {
         //     return new Promise((resolve, reject) => {
         //         reject();

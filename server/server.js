@@ -17,7 +17,6 @@ var app = express();
 
 app.use(bodyParser.json());
 
-
 app.post('/login', (req, res) => {
     var body = _.pick(req.body, ['username', 'password']);
     var hashedPAssword;
@@ -99,7 +98,7 @@ app.post('/admin', (req, res) => {
 
 })
 
-app.post('/dealer', (req, res) => {
+app.post('/dealer',authenticate, (req, res) => {
     var body = _.pick(req.body, ['dealer_Name', 'contact_Name', 'delaer_Mobile', 'email', 'contact_Mobile', 'address', 'pincode', 'password', 'geoLocation']);
     var loginBody = {
         username: body.email,
@@ -116,9 +115,9 @@ app.post('/dealer', (req, res) => {
         pincode: body.pincode,
         password: body.password,
         geoLocation: [{
-            lat: '', lng: ''
-        }
-        ]
+            lat: '',
+            lng: ''
+        }]
     }
 
     const url = dealer_body.pincode;
