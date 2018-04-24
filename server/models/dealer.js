@@ -14,7 +14,7 @@ const Dealer = mongoose.model('Dealer', {
         type: Number,
         default: null
     },
-    delaer_Mobile: {
+    dealer_Mobile: {
         type: Number,
         required: true
      

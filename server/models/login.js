@@ -57,12 +57,7 @@ LoginSchema.statics.findByToken = function (token) {
 
     try {
         decoded = jwt.verify(token, '123abc');
-        // console.log('decoded::::::::::::',decoded);
     } catch (e) {
-        //     return new Promise((resolve, reject) => {
-        //         reject();
-        //     })
-
         return Promise.reject();
     }
 
@@ -70,7 +65,7 @@ LoginSchema.statics.findByToken = function (token) {
         '_id': decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
-    });
+    }); 
 
 };
 

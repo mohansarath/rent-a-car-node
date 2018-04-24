@@ -7,6 +7,7 @@ const { ObjectID } = require('mongodb');
 const request = require('request');
 const sgMail = require('@sendgrid/mail');
 const bcrypt = require('bcryptjs');
+// var cors = require('cors')
 
 var { mongoose } = require('./db/mongoose');
 var { Dealer } = require('./models/dealer');
@@ -14,6 +15,16 @@ var { Login } = require('./models/login');
 var { authenticate } = require('./middleware/authenticate');
 
 var app = express();
+
+// app.use(cors())
+
+
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept,x-auth');
+    res.header('Access-Control-Expose-Headers', 'x-auth');
+    next();
+});
 
 app.use(bodyParser.json());
 
@@ -24,8 +35,8 @@ app.post('/login', (req, res) => {
     Login.findOne({
         username: body.username
     }, (err, login) => {
-        if (!login) {
-            return res.send("username doesnot exist")
+        if (!login ) {
+            return res.status(400).send("username doesnot exist")
         } else {
             console.log(login);
             hashedPAssword = login.password;
@@ -99,7 +110,7 @@ app.post('/admin', (req, res) => {
 })
 
 app.post('/dealer',authenticate, (req, res) => {
-    var body = _.pick(req.body, ['dealer_Name', 'contact_Name', 'delaer_Mobile', 'email', 'contact_Mobile', 'address', 'pincode', 'password', 'geoLocation']);
+    var body = _.pick(req.body, ['dealer_Name', 'contact_Name', 'dealer_Mobile', 'email', 'contact_Mobile', 'address', 'pincode', 'password', 'geoLocation']);
     var loginBody = {
         username: body.email,
         password: body.password,
@@ -108,7 +119,7 @@ app.post('/dealer',authenticate, (req, res) => {
     var dealer_body = {
         dealer_Name: body.dealer_Name,
         contact_Name: body.contact_Name,
-        delaer_Mobile: body.delaer_Mobile,
+        dealer_Mobile: body.dealer_Mobile,
         email: body.email,
         contact_Mobile: body.contact_Mobile,
         address: body.address,
