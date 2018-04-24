@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const validator = require('validator');
+var {Schema} = require('mongoose');
 
 const Car = mongoose.model('Car', {
     kilometers: {
@@ -17,7 +18,7 @@ const Car = mongoose.model('Car', {
         default: false
     },
 
-    milage: {
+    mileage: {
         type: Number,
         required: true,
     },
@@ -46,15 +47,18 @@ const Car = mongoose.model('Car', {
         },
 
         is_AC: {
-            type: Boolean
+            type: Boolean,
+            default:true
         },
 
         has_ABS: {
-            type: Boolean
+            type: Boolean,
+            default: true
         },
 
         has_EBD: {
-            type: Boolean
+            type: Boolean,
+            default: true
         },
 
         engine: {
@@ -62,7 +66,6 @@ const Car = mongoose.model('Car', {
         },
 
         fuel_Type_ID: [{ type: Schema.Types.ObjectId, ref: 'Fueltype' }],
-        transmission_ID: [{ type: Schema.Types.ObjectId, ref: 'Transmissiontype' }]
     }],
 
     Type_ID: [{ type: Schema.Types.ObjectId, ref: 'Cartype' }],

@@ -12,6 +12,7 @@ const bcrypt = require('bcryptjs');
 var { mongoose } = require('./db/mongoose');
 var { Dealer } = require('./models/dealer');
 var { Login } = require('./models/login');
+var { Car} = require('./models/car');
 var { authenticate } = require('./middleware/authenticate');
 
 var app = express();
@@ -194,6 +195,59 @@ app.post('/dealer',authenticate, (req, res) => {
 app.get('/dealer',authenticate, (req, res) => {
     Dealer.find().then((dealer) => {
         res.send({ dealer })
+    }, (e) => {
+        res.status(400).send(e);
+    })
+})
+
+app.post('/car',(req, res) => {
+    var body = _.pick(req.body, ['kilometers', 'mileage', 'year', 'features', 'Type_ID', 'Make_ID', 'Model_ID', 'branch_ID','is_Rented']);
+    var carbody={
+        kilometers: body.kilometers,
+        mileage: body.mileage,
+        year: body.year,
+        features: [{
+            exterior_Colour : '',
+            interior_Colour: '',
+            price:'',
+            seater:'',
+            is_AC: '',
+            has_ABS:'',
+            has_EBD:'',
+            engine:'',
+            fuel_Type_ID:'',
+        }],
+        Make_ID: body.Make_ID,
+        Model_ID: body.Model_ID,
+        branch_ID: body.branch_ID
+    }
+
+    var car = new Car(body);
+
+
+    car.save().then((doc) => {
+         res.send(doc);
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+
+
+})
+
+app.get('/car-rented', (req, res) => {
+
+    Car.find({is_Rented:true}).then((car) => {
+        console.log(JSON.stringify(car));
+        res.send({ car })
+    }, (e) => {
+        res.status(400).send(e);
+    })
+})
+
+app.get('/car-available', (req, res) => {
+
+    Car.find({ is_Rented: false }).then((car) => {
+        res.send({ car })
     }, (e) => {
         res.status(400).send(e);
     })
