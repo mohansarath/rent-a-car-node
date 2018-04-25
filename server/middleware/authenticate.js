@@ -1,8 +1,9 @@
 var { Login } = require('./../models/login');
 
 var authenticate = (req, res, next) => {
-    var token = req.header('x-auth');
 
+    console.log(req.headers['x-auth']);
+    var token = req.header('x-auth');
     Login.findByToken(token).then((login) => {
         if (!login) {
             return Promise.reject();

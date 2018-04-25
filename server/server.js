@@ -61,32 +61,6 @@ app.post('/login', (req, res) => {
     })
 
     console.log(hashedPAssword);
-    // bcrypt.compare(body.password, hashedPAssword, (err, resp) => {
-    //      console.log(res);
-
-    //     if(res === true){
-    //         res.header('x-auth', login.tokens[0].token).send({
-    //             username: login.username,
-    //             role: login.role
-    //         });
-    //     }
-    // })
-
-
-    // Login.findOne({
-    //     username: body.username,
-    //     password: body.password
-    // },
-    // (err,login) => {
-    //     if(err) return res.send(err);
-    //     if(!login) return res.send('wrong login credentials')
-    //     console.log(login);
-    //      res.header('x-auth',login.tokens[0].token).send({ 
-    //         username: login.username, 
-    //         role: login.role
-    //     });
-    // })
-
 })
 
 app.post('/admin', (req, res) => {
@@ -161,13 +135,6 @@ app.post('/dealer', authenticate, (req, res) => {
         }).catch((e) => {
             res.status(400).send(e);
         });
-
-        // login.save().then((doc) => {
-        //     res.send(doc);
-        // }).catch((e) => {
-        //     res.status(400).send(e);
-        // });
-
 
         dealer.save().then((doc) => {
             //  res.send(doc);
@@ -274,7 +241,6 @@ app.get('/car-available', authenticate, (req, res) => {
         .populate('Model_ID')
         .populate('Dealer_ID')
         .then((car) => {
-
             return res.send(car)
         }, (e) => {
             res.status(400).send(e);
@@ -292,7 +258,16 @@ app.post('/settings', (req, res)=> {
         res.status(400).send(e);
     });
  
-} )
+})
+
+app.get('/settings', (req, res) => {
+
+    Settings.find().then((doc) => {
+        return res.send(doc)
+    },(e) => {
+        res.status(400).send(e);
+    })
+})
 
 app.listen(3000, () => {
     console.log('Started on port 3000');
