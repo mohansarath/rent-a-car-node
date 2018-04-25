@@ -12,8 +12,9 @@ const bcrypt = require('bcryptjs');
 var { mongoose } = require('./db/mongoose');
 var { Dealer } = require('./models/dealer');
 var { Login } = require('./models/login');
-var { Car} = require('./models/car');
+var Car = require('./models/car');
 var { authenticate } = require('./middleware/authenticate');
+var { Carmake, Carmodel, Cartype, FuelModel } = require('./models/master');
 
 var app = express();
 
@@ -36,7 +37,7 @@ app.post('/login', (req, res) => {
     Login.findOne({
         username: body.username
     }, (err, login) => {
-        if (!login ) {
+        if (!login) {
             return res.status(400).send("username doesnot exist")
         } else {
             console.log(login);
@@ -110,7 +111,7 @@ app.post('/admin', (req, res) => {
 
 })
 
-app.post('/dealer',authenticate, (req, res) => {
+app.post('/dealer', authenticate, (req, res) => {
     var body = _.pick(req.body, ['dealer_Name', 'contact_Name', 'dealer_Mobile', 'email', 'contact_Mobile', 'address', 'pincode', 'password', 'geoLocation']);
     var loginBody = {
         username: body.email,
@@ -192,7 +193,7 @@ app.post('/dealer',authenticate, (req, res) => {
 });
 
 
-app.get('/dealer',authenticate, (req, res) => {
+app.get('/dealer', authenticate, (req, res) => {
     Dealer.find().then((dealer) => {
         res.send({ dealer })
     }, (e) => {
@@ -200,22 +201,22 @@ app.get('/dealer',authenticate, (req, res) => {
     })
 })
 
-app.post('/car',(req, res) => {
-    var body = _.pick(req.body, ['kilometers', 'mileage', 'year', 'features', 'Type_ID', 'Make_ID', 'Model_ID', 'branch_ID','is_Rented']);
-    var carbody={
+app.post('/car', (req, res) => {
+    var body = _.pick(req.body, ['kilometers', 'mileage', 'year', 'features', 'Type_ID', 'Make_ID', 'Model_ID', 'branch_ID', 'is_Rented']);
+    var carbody = {
         kilometers: body.kilometers,
         mileage: body.mileage,
         year: body.year,
         features: [{
-            exterior_Colour : '',
+            exterior_Colour: '',
             interior_Colour: '',
-            price:'',
-            seater:'',
+            price: '',
+            seater: '',
             is_AC: '',
-            has_ABS:'',
-            has_EBD:'',
-            engine:'',
-            fuel_Type_ID:'',
+            has_ABS: '',
+            has_EBD: '',
+            engine: '',
+            fuel_Type_ID: '',
         }],
         Make_ID: body.Make_ID,
         Model_ID: body.Model_ID,
@@ -226,7 +227,7 @@ app.post('/car',(req, res) => {
 
 
     car.save().then((doc) => {
-         res.send(doc);
+        res.send(doc);
     }).catch((e) => {
         res.status(400).send(e);
     });
@@ -234,23 +235,49 @@ app.post('/car',(req, res) => {
 
 })
 
+app.post('/make', (req, res) => {
+    var make = new Carmake(req.body);
+
+    make.save().then((doc) => {
+        res.send(doc);
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+})
+
+
 app.get('/car-rented', (req, res) => {
 
-    Car.find({is_Rented:true}).then((car) => {
+
+    Car.find({ is_Rented: true }).then((car) => {
         console.log(JSON.stringify(car));
+
+        car.map((item) => {
+            console.log(item);
+        })
+
         res.send({ car })
     }, (e) => {
         res.status(400).send(e);
     })
 })
 
+
 app.get('/car-available', (req, res) => {
 
-    Car.find({ is_Rented: false }).then((car) => {
-        res.send({ car })
-    }, (e) => {
-        res.status(400).send(e);
-    })
+    var i = 0;
+    var makeName, modelName, typeName, fuelName;
+    Car.find({ is_Rented: false })
+        .populate('features.fuel_Type_ID')
+        .populate('Type_ID')
+        .populate('Make_ID')
+        .populate('Model_ID')
+        .then((car) => {
+
+            return res.send(car)
+        }, (e) => {
+            res.status(400).send(e);
+        })
 })
 
 app.listen(3000, () => {

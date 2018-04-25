@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 const validator = require('validator');
 var {Schema} = require('mongoose');
 
-const Car = mongoose.model('Car', {
+const CarSchema = new Schema({
     kilometers: {
         type: String,
         required: true
@@ -65,13 +65,12 @@ const Car = mongoose.model('Car', {
             type: String
         },
 
-        fuel_Type_ID: [{ type: Schema.Types.ObjectId, ref: 'Fueltype' }],
+        fuel_Type_ID: [{ type: Schema.Types.ObjectId, ref: 'fueltypes' }],
     }],
 
-    Type_ID: [{ type: Schema.Types.ObjectId, ref: 'Cartype' }],
-    Make_ID: [{ type: Schema.Types.ObjectId, ref: 'Carmake' }],
-    Model_ID: [{ type: Schema.Types.ObjectId, ref: 'Carmodel' }],
-    branch_ID: [{ type: Schema.Types.ObjectId, ref: 'Branch' }]
-})
+    Type_ID: [{ type: Schema.Types.ObjectId, ref: 'cartypes' }],
+    Make_ID: [{ type: Schema.Types.ObjectId, ref: 'carmakes' }],
+    Model_ID: [{ type: Schema.Types.ObjectId, ref: 'carmodels' }]
+});
 
-module.exports = { Car }
+module.exports = mongoose.model('Car', CarSchema);

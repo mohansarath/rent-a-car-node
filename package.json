@@ -2,7 +2,7 @@
   "name": "rent-a-car-node",
   "version": "1.0.0",
   "description": "Back-end of admin module of rent a car application",
-  "main": "index.js",
+  "main": "server/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
