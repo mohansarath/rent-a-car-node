@@ -249,24 +249,22 @@ app.post('/make', (req, res) => {
 app.get('/car-rented', (req, res) => {
 
 
-    Car.find({ is_Rented: true }).then((car) => {
-        console.log(JSON.stringify(car));
+    Car.find({ is_Rented: true })
+        .populate('features.fuel_Type_ID')
+        .populate('Type_ID')
+        .populate('Make_ID')
+        .populate('Model_ID')
+        .then((car) => {
 
-        car.map((item) => {
-            console.log(item);
+            return res.send(car)
+        }, (e) => {
+            res.status(400).send(e);
         })
-
-        res.send({ car })
-    }, (e) => {
-        res.status(400).send(e);
-    })
 })
 
 
 app.get('/car-available', (req, res) => {
 
-    var i = 0;
-    var makeName, modelName, typeName, fuelName;
     Car.find({ is_Rented: false })
         .populate('features.fuel_Type_ID')
         .populate('Type_ID')
