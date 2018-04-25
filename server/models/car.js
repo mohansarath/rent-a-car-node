@@ -70,7 +70,8 @@ const CarSchema = new Schema({
 
     Type_ID: [{ type: Schema.Types.ObjectId, ref: 'cartypes' }],
     Make_ID: [{ type: Schema.Types.ObjectId, ref: 'carmakes' }],
-    Model_ID: [{ type: Schema.Types.ObjectId, ref: 'carmodels' }]
+    Model_ID: [{ type: Schema.Types.ObjectId, ref: 'carmodels' }],
+    Dealer_ID: [{ type: Schema.Types.ObjectId, ref: 'dealers' }],
 });
 
 module.exports = mongoose.model('Car', CarSchema);

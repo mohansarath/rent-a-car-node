@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 const validator = require('validator');
+const Schema = mongoose.Schema;
 
-const Dealer = mongoose.model('Dealer', {
+const DealerSchema = new Schema({
     dealer_Name: {
         type: String,
         required: true
@@ -65,5 +66,7 @@ const Dealer = mongoose.model('Dealer', {
         }
     }]
 });
+
+const Dealer = mongoose.model('dealers', DealerSchema);
 
 module.exports = { Dealer };

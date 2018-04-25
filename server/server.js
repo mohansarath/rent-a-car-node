@@ -202,7 +202,7 @@ app.get('/dealer', authenticate, (req, res) => {
 })
 
 app.post('/car', (req, res) => {
-    var body = _.pick(req.body, ['kilometers', 'mileage', 'year', 'features', 'Type_ID', 'Make_ID', 'Model_ID', 'branch_ID', 'is_Rented']);
+    var body = _.pick(req.body, ['kilometers', 'mileage', 'year', 'features', 'Type_ID', 'Make_ID', 'Model_ID', 'branch_ID', 'is_Rented', 'Dealer_ID']);
     var carbody = {
         kilometers: body.kilometers,
         mileage: body.mileage,
@@ -246,7 +246,7 @@ app.post('/make', (req, res) => {
 })
 
 
-app.get('/car-rented', (req, res) => {
+app.get('/car-rented', authenticate, (req, res) => {
 
 
     Car.find({ is_Rented: true })
@@ -254,6 +254,7 @@ app.get('/car-rented', (req, res) => {
         .populate('Type_ID')
         .populate('Make_ID')
         .populate('Model_ID')
+        .populate('Dealer_ID')
         .then((car) => {
 
             return res.send(car)
@@ -263,13 +264,14 @@ app.get('/car-rented', (req, res) => {
 })
 
 
-app.get('/car-available', (req, res) => {
+app.get('/car-available', authenticate, (req, res) => {
 
     Car.find({ is_Rented: false })
         .populate('features.fuel_Type_ID')
         .populate('Type_ID')
         .populate('Make_ID')
         .populate('Model_ID')
+        .populate('Dealer_ID')
         .then((car) => {
 
             return res.send(car)
