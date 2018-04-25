@@ -269,7 +269,7 @@ app.get('/settings', (req, res) => {
     })
 })
 
-app.patch('/settings/:id', (req, res) => {
+app.put('/settings/:id', (req, res) => {
     var id = req.params.id;
     var body = _.pick(req.body, ['commission']);
 
