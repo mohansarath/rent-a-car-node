@@ -15,6 +15,7 @@ var { Login } = require('./models/login');
 var Car = require('./models/car');
 var { authenticate } = require('./middleware/authenticate');
 var { Carmake, Carmodel, Cartype, FuelModel } = require('./models/master');
+var { Settings} = require('./models/settings');
 
 var app = express();
 
@@ -279,6 +280,19 @@ app.get('/car-available', authenticate, (req, res) => {
             res.status(400).send(e);
         })
 })
+
+app.post('/settings', (req, res)=> {
+    var body = _.pick(req.body, ['commission']);
+    var settings = new Settings(body);
+
+
+    settings.save().then((doc) => {
+        res.send(doc);
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+ 
+} )
 
 app.listen(3000, () => {
     console.log('Started on port 3000');
