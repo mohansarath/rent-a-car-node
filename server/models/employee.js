@@ -66,7 +66,7 @@ const EmployeeSchema = new Schema( {
         minlength: 6
     },
 
-    dealer_ID: [{ type: Schema.Types.ObjectId, ref: 'Dealer' }]
+    dealer_ID: [{ type: Schema.Types.ObjectId, ref: 'dealers' }]
 });
 
 const Employee = mongoose.model('employees', EmployeeSchema);
