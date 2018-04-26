@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 const validator = require('validator');
+const Schema = mongoose.Schema;
 
-const Employee = mongoose.model('Employee', {
+const EmployeeSchema = new Schema( {
     code: {
         type: String,
         required: true,
@@ -65,8 +66,9 @@ const Employee = mongoose.model('Employee', {
         minlength: 6
     },
 
-    dealer_ID: [{ type: Schema.Types.ObjectId, ref: 'Dealer' }],
-    branch_ID: [{ type: Schema.Types.ObjectId, ref: 'Branch' }]
+    dealer_ID: [{ type: Schema.Types.ObjectId, ref: 'Dealer' }]
 });
+
+const Employee = mongoose.model('employees', EmployeeSchema);
 
 module.exports = { Employee };

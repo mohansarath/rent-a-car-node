@@ -4,7 +4,7 @@ var {Schema} = require('mongoose');
 
 const CarSchema = new Schema({
     kilometers: {
-        type: String,
+        type: Number,
         required: true
     },
 
@@ -71,7 +71,7 @@ const CarSchema = new Schema({
     Type_ID: [{ type: Schema.Types.ObjectId, ref: 'cartypes' }],
     Make_ID: [{ type: Schema.Types.ObjectId, ref: 'carmakes' }],
     Model_ID: [{ type: Schema.Types.ObjectId, ref: 'carmodels' }],
-    Dealer_ID: [{ type: Schema.Types.ObjectId, ref: 'dealers' }],
+    Dealer_ID: [{ type: Schema.Types.ObjectId, ref: 'dealers' }]
 });
 
 module.exports = mongoose.model('Car', CarSchema);

@@ -7,19 +7,20 @@ const { ObjectID } = require('mongodb');
 const request = require('request');
 const sgMail = require('@sendgrid/mail');
 const bcrypt = require('bcryptjs');
-// var cors = require('cors')
+ var cors = require('cors')
 
+var { authenticate } = require('./middleware/authenticate');
 var { mongoose } = require('./db/mongoose');
 var { Dealer } = require('./models/dealer');
 var { Login } = require('./models/login');
 var Car = require('./models/car');
-var { authenticate } = require('./middleware/authenticate');
 var { Carmake, Carmodel, Cartype, FuelModel } = require('./models/master');
 var { Settings} = require('./models/settings');
+var { Employee} = require('./models/employee');
 
 var app = express();
 
-// app.use(cors())
+ app.use(cors())
 
 
 app.use(function (req, res, next) {
@@ -289,6 +290,17 @@ app.put('/settings/:id', (req, res) => {
     })
 
 });
+
+app.post('/employee',(req, res) => {
+    var body = _.pick(req.body, ['code', 'name', 'doj', 'dob', 'role', 'email', 'gender', 'mobile', 'address', 'password', 'dealer_ID']);
+    var employee = new Employee(body);
+
+    employee.save().then((doc) => {
+        res.send(doc);
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+})
 
 app.listen(3000, () => {
     console.log('Started on port 3000');
