@@ -268,6 +268,26 @@ app.get('/car-rented/:id', authenticate, (req, res) => {
         })
 })
 
+app.get('/car-available/:id', authenticate, (req, res) => {
+
+    var id = req.params.id;
+    Car.find({
+        is_Rented: false,
+        Dealer_ID: id
+    })
+        .populate('features.fuel_Type_ID')
+        .populate('Type_ID')
+        .populate('Make_ID')
+        .populate('Model_ID')
+        .populate('Dealer_ID')
+        .then((car) => {
+
+            return res.send(car)
+        }, (e) => {
+            res.status(400).send(e);
+        })
+})
+
 
 app.post('/settings', (req, res)=> {
     var body = _.pick(req.body, ['commission']);
