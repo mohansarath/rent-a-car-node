@@ -40,7 +40,7 @@ app.post('/login', (req, res) => {
         username: body.username
     }, (err, login) => {
         if (!login) {
-            return res.status(400).send("username doesnot exist")
+            return res.status(200).send("username doesnot exist")
         } else {
             console.log(login);
             hashedPAssword = login.password;
@@ -289,7 +289,7 @@ app.get('/car-available/:id', authenticate, (req, res) => {
 })
 
 
-app.post('/settings', (req, res)=> {
+app.post('/settings', authenticate, (req, res)=> {
     var body = _.pick(req.body, ['commission']);
     var settings = new Settings(body);
 
@@ -302,7 +302,7 @@ app.post('/settings', (req, res)=> {
  
 })
 
-app.get('/settings', (req, res) => {
+app.get('/settings', authenticate, (req, res) => {
 
     Settings.find().then((doc) => {
         return res.send(doc)
@@ -311,7 +311,7 @@ app.get('/settings', (req, res) => {
     })
 })
 
-app.put('/settings/:id', (req, res) => {
+app.put('/settings/:id', authenticate, (req, res) => {
     var id = req.params.id;
     var body = _.pick(req.body, ['commission']);
 
@@ -332,7 +332,7 @@ app.put('/settings/:id', (req, res) => {
 
 });
 
-app.post('/employee',(req, res) => {
+app.post('/employee', authenticate,(req, res) => {
     var body = _.pick(req.body, ['code', 'name', 'doj', 'dob', 'role', 'email', 'gender', 'mobile', 'address', 'password', 'dealer_ID']);
     var employee = new Employee(body);
 
@@ -343,7 +343,7 @@ app.post('/employee',(req, res) => {
     });
 })
 
-app.get('/employee', (req,res) => {
+app.get('/employee', authenticate, (req,res) => {
 
     Employee.find()
         .populate('dealer_ID')
@@ -354,7 +354,7 @@ app.get('/employee', (req,res) => {
         })
 })
 
-app.get('/employee/:id', (req, res) => {
+app.get('/employee/:id', authenticate, (req, res) => {
 
     var id = req.params.id;
     Employee.find({ dealer_ID: id})
@@ -364,6 +364,16 @@ app.get('/employee/:id', (req, res) => {
         }, (e) => {
             res.status(400).send(e);
         })
+})
+
+app.get('/dealer/:id',(req,res) => {
+
+    var name=req.params.id;
+    Dealer.find({ dealer_Name: name }).then((doc) => {
+        return res.send(doc)
+    }, (e) => {
+        res.status(400).send(e);
+    })
 })
 
 app.listen(3000, () => {

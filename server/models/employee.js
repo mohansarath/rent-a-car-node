@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 const EmployeeSchema = new Schema( {
     code: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
 
     name: {
