@@ -2,7 +2,7 @@ var { Login } = require('./../models/login');
 
 var authenticate = (req, res, next) => {
 
-    console.log(req.headers['x-auth']);
+    // console.log(req.headers['x-auth']);
     var token = req.header('x-auth');
     Login.findByToken(token).then((login) => {
         if (!login) {

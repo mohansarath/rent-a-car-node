@@ -354,23 +354,51 @@ app.get('/employee', authenticate, (req,res) => {
         })
 })
 
-app.get('/employee/:id', authenticate, (req, res) => {
 
-    var id = req.params.id;
-    Employee.find({ dealer_ID: id})
-        .populate('dealer_ID')
-        .then((doc) => {
-            return res.send(doc)
+app.get('/employee/:pageno', authenticate, (req, res) => {
+
+    var pageno = req.params.pageno;
+    var startsWith = (pageno-1)*10;
+   
+    Employee.count()
+        .then((count) => {
+            var limit = (10 * pageno)-1;
+            Employee.find( )
+                .sort('name')
+                .populate('dealer_ID')
+                .then((employee) => {
+                    return res.send({ count, startsWith, limit, employee: employee.slice(startsWith, limit + startsWith)})
+                }, (e) => {
+                    res.status(400).send(e);
+                })
         }, (e) => {
             res.status(400).send(e);
         })
+   
 })
+
+
+// app.get('/employee/:id', authenticate, (req, res) => {
+
+//     var id = req.params.id;
+//     Employee.find({ dealer_ID: id})
+//         .populate('dealer_ID')
+//         .then((doc) => {
+//             return res.send(doc)
+//         }, (e) => {
+//             res.status(400).send(e);
+//         })
+// })
 
 app.get('/dealer/:id',(req,res) => {
 
     var name=req.params.id;
-    Dealer.find({ dealer_Name: name }).then((doc) => {
-        return res.send(doc)
+   
+    
+    // var item = ;
+    // console.log("name::::::::::", item);
+    Dealer.find({ dealer_Name: { $regex: '^' + name, $options: 'i' } }).then((dealer) => {
+        return res.send({ dealer})
     }, (e) => {
         res.status(400).send(e);
     })
