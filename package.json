@@ -4,7 +4,9 @@
   "description": "Back-end of admin module of rent a car application Rent a car",
   "main": "server/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -27,6 +29,8 @@
     "mongodb": "^3.0.7",
     "mongoose": "^5.0.15",
     "request": "^2.85.0",
-    "validator": "^9.4.1"
-  }
+    "validator": "^9.4.1",
+    "snyk": "^1.316.1"
+  },
+  "snyk": true
 }
